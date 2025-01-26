@@ -8,7 +8,7 @@ use App\Traits\ApiResponser;
 use App\Models\Category;
 
 
-class ExampleController extends Controller
+class CategoryController extends Controller
 {
     use ApiResponser;
 
@@ -87,15 +87,18 @@ class ExampleController extends Controller
         ];
 
         //Validate the request
-        return $this->validate($request,$rules);
+        $this->validate($request,$rules);
 
 
         //Find a specific category
         $category = Category::findOrFail($category);
 
+         //Update the category
+         $category->fill($request->all());
+
         //Check if category has changed
         if($category->isClean()){
-            return $this->errorResponse($category,Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->errorResponse('At least one value must change',Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         //save the category
